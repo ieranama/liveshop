@@ -1,93 +1,133 @@
-
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { List, Avatar, Button, Divider, Text } from 'react-native-paper';
+import ScreenLayout from '../components/ScreenLayout';
+import { View, Text, StyleSheet, Switch } from 'react-native';
+import { Avatar, Button, Card } from 'react-native-paper';
+import { useState } from 'react';
 
 const ProfileScreen = () => {
+  // ⚠️ TEMPORAL: luego vendrá de Firebase
+  const [isSeller, setIsSeller] = useState(false);
+
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Avatar.Text size={80} label="US" style={styles.avatar} />
-        <Text style={styles.name}>Usuario Demo</Text>
-        <Text style={styles.email}>demo@liveshop.com</Text>
+    <ScreenLayout>
+      <View style={styles.container}>
+        {/* USER INFO */}
+        <View style={styles.header}>
+          <Avatar.Text
+            size={72}
+            label="IM"
+            style={styles.avatar}
+          />
+          <Text style={styles.name}>Iñigo Marin</Text>
+          <Text style={styles.email}>ieranamarin@gmail.com</Text>
+        </View>
+
+        {/* ROLE SWITCH */}
+        <Card style={styles.card}>
+          <Text style={styles.cardTitle}>Account type</Text>
+
+          <View style={styles.roleRow}>
+            <Text style={styles.roleText}>
+              {isSeller ? 'Seller mode' : 'Buyer mode'}
+            </Text>
+            <Switch
+              value={isSeller}
+              onValueChange={setIsSeller}
+              thumbColor={isSeller ? '#6200ee' : '#ccc'}
+            />
+          </View>
+
+          <Text style={styles.helper}>
+            {isSeller
+              ? 'You can host live streams and sell products'
+              : 'You can watch live streams and shop products'}
+          </Text>
+        </Card>
+
+        {/* ACTIONS */}
+        {isSeller ? (
+          <>
+            <Card style={styles.card}>
+              <Button
+                mode="contained"
+                onPress={() => {}}
+              >
+                🎥 Go Live
+              </Button>
+            </Card>
+
+            <Card style={styles.card}>
+              <Button mode="outlined">My Products</Button>
+              <Button mode="outlined" style={styles.secondary}>
+                Earnings
+              </Button>
+            </Card>
+          </>
+        ) : (
+          <>
+            <Card style={styles.card}>
+              <Button mode="outlined">My Orders</Button>
+              <Button mode="outlined" style={styles.secondary}>
+                Payment Methods
+              </Button>
+            </Card>
+          </>
+        )}
+
+        {/* LOGOUT */}
+        <Card style={styles.card}>
+          <Button mode="text" textColor="red">
+            Log out
+          </Button>
+        </Card>
       </View>
-
-      <Divider style={styles.divider} />
-
-      <List.Section>
-        <List.Subheader>Cuenta</List.Subheader>
-        <List.Item
-          title="Mis pedidos"
-          left={props => <List.Icon {...props} icon="package-variant" />}
-          onPress={() => {}}
-        />
-        <List.Item
-          title="Direcciones"
-          left={props => <List.Icon {...props} icon="map-marker" />}
-          onPress={() => {}}
-        />
-        <List.Item
-          title="Métodos de pago"
-          left={props => <List.Icon {...props} icon="credit-card" />}
-          onPress={() => {}}
-        />
-      </List.Section>
-
-      <Divider style={styles.divider} />
-
-      <List.Section>
-        <List.Subheader>Configuración</List.Subheader>
-        <List.Item
-          title="Notificaciones"
-          left={props => <List.Icon {...props} icon="bell" />}
-          onPress={() => {}}
-        />
-        <List.Item
-          title="Privacidad"
-          left={props => <List.Icon {...props} icon="shield-account" />}
-          onPress={() => {}}
-        />
-      </List.Section>
-
-      <Button 
-        mode="outlined" 
-        onPress={() => console.log('Logout')}
-        style={styles.logoutButton}
-        textColor="#d32f2f">
-        Cerrar Sesión
-      </Button>
-    </ScrollView>
+    </ScreenLayout>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
+    padding: 20,
   },
   header: {
     alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#f5f5f5',
+    marginBottom: 24,
   },
   avatar: {
     backgroundColor: '#6200ee',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   name: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 4,
   },
   email: {
-    fontSize: 14,
     color: '#666',
   },
-  divider: {
-    marginVertical: 8,
+  card: {
+    padding: 16,
+    marginBottom: 16,
   },
-  logoutButton: {
-    margin: 20,
-    borderColor: '#d32f2f',
+  cardTitle: {
+    fontWeight: 'bold',
+    marginBottom: 12,
+    fontSize: 16,
+  },
+  roleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  roleText: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  helper: {
+    marginTop: 8,
+    color: '#666',
+    fontSize: 13,
+  },
+  secondary: {
+    marginTop: 8,
   },
 });
 

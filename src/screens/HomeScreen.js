@@ -1,112 +1,164 @@
+import ScreenLayout from '../components/ScreenLayout';
+import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import { Card, Button, Badge } from 'react-native-paper';
 
-import { View, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
-import { Text, Card, Badge } from 'react-native-paper';
-
-const MOCK_STREAMS = [
+const streams = [
   {
-    id: '1',
-    hostName: 'María García',
-    productName: 'iPhone 15 Pro',
-    viewers: 1234,
-    thumbnail: 'https://via.placeholder.com/300x200',
+    id: "1",
+    title: "Beauty & Skincare Essentials",
+    host: "Sarah's Fashion & Tech",
+    viewers: 2847,
+    thumbnail: "https://images.unsplash.com/photo-1765534639747-104beb5cb821?auto=format&fit=crop&w=1080&q=80",
+    isLive: true,
   },
   {
-    id: '2',
-    hostName: 'Juan Pérez',
-    productName: 'Nike Air Max',
-    viewers: 856,
-    thumbnail: 'https://via.placeholder.com/300x200',
-  },
-  {
-    id: '3',
-    hostName: 'Ana López',
-    productName: 'MacBook Pro M3',
-    viewers: 2104,
-    thumbnail: 'https://via.placeholder.com/300x200',
+    id: "2",
+    title: "Tech Gadgets & Electronics",
+    host: "Tech Trends Daily",
+    thumbnail: "https://images.unsplash.com/photo-1754667167006-aad09810a454?auto=format&fit=crop&w=1080&q=80",
+    isLive: false,
+    startTime: "Today at 3:00 PM",
   },
 ];
 
 const HomeScreen = ({ navigation }) => {
-  const renderStream = ({ item }) => (
-    <TouchableOpacity 
-      onPress={() => navigation.navigate('LiveViewer', { streamId: item.id })}
-      style={styles.streamCard}>
-      <Card>
-        <Card.Cover source={{ uri: item.thumbnail }} />
-        <Card.Content style={styles.cardContent}>
-          <View style={styles.liveIndicator}>
-            <Badge style={styles.liveBadge}>🔴 LIVE</Badge>
-            <Text style={styles.viewers}>👁 {item.viewers}</Text>
-          </View>
-          <Text style={styles.productName}>{item.productName}</Text>
-          <Text style={styles.hostName}>por {item.hostName}</Text>
-        </Card.Content>
-      </Card>
-    </TouchableOpacity>
-  );
-
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>🔥 En Vivo Ahora</Text>
-      </View>
-      <FlatList
-        data={MOCK_STREAMS}
-        renderItem={renderStream}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.list}
-      />
-    </View>
+    <ScreenLayout>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{ paddingBottom: 40 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* HERO */}
+        <View style={styles.hero}>
+          <Image
+            source={{
+              uri: "https://images.unsplash.com/photo-1758520387811-7b406f7225bf?auto=format&fit=crop&w=1080&q=80",
+            }}
+            style={styles.heroImage}
+          />
+          <View style={styles.heroOverlay} />
+
+          <View style={styles.heroInner}>
+            <Badge style={styles.liveBadge}>LIVE NOW</Badge>
+
+            <Text style={styles.heroTitle}>
+              Shop Live,{'\n'}Shop Smart
+            </Text>
+
+            <Text style={styles.heroSubtitle}>
+              Join thousands of shoppers discovering amazing deals in real-time.
+            </Text>
+
+            <Button
+              mode="contained"
+              style={styles.heroButton}
+              onPress={() => navigation.navigate('LiveViewer')}
+            >
+              Join Live Stream
+            </Button>
+          </View>
+        </View>
+
+        {/* STREAMS */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Live & Upcoming Streams</Text>
+
+          {streams.map((stream) => (
+            <Card key={stream.id} style={styles.card}>
+              <Image source={{ uri: stream.thumbnail }} style={styles.thumb} />
+              <View style={styles.cardContent}>
+                <Text style={styles.streamTitle}>{stream.title}</Text>
+                <Text style={styles.streamHost}>{stream.host}</Text>
+
+                <Button
+                  mode={stream.isLive ? "contained" : "outlined"}
+                  disabled={!stream.isLive}
+                  onPress={() => navigation.navigate('LiveViewer')}
+                >
+                  {stream.isLive ? "Watch Now" : stream.startTime}
+                </Button>
+              </View>
+            </Card>
+          ))}
+        </View>
+
+        {/* FEATURES */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Why LiveShop?</Text>
+
+          <Card style={styles.featureCard}>
+            <Text style={styles.featureTitle}>Live Shopping</Text>
+            <Text style={styles.featureText}>
+              Watch live streams and shop featured products in real-time
+            </Text>
+          </Card>
+
+          <Card style={styles.featureCard}>
+            <Text style={styles.featureTitle}>Community Chat</Text>
+            <Text style={styles.featureText}>
+              Connect with other shoppers during live streams
+            </Text>
+          </Card>
+        </View>
+      </ScrollView>
+    </ScreenLayout>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  container: { flex: 1, backgroundColor: '#fff' },
+
+  hero: {
+    height: 320,
+    margin: 16,
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  heroImage: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  heroOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(98,0,238,0.65)',
+  },
+  heroInner: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  header: {
+    justifyContent: 'flex-end',
     padding: 20,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
   },
-  headerTitle: {
-    fontSize: 24,
+  heroTitle: {
+    color: '#fff',
+    fontSize: 28,
     fontWeight: 'bold',
-  },
-  list: {
-    padding: 10,
-  },
-  streamCard: {
-    marginBottom: 15,
-  },
-  cardContent: {
-    paddingTop: 10,
-  },
-  liveIndicator: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: 8,
   },
-  liveBadge: {
-    backgroundColor: '#ff0000',
+  heroSubtitle: {
     color: '#fff',
-  },
-  viewers: {
     fontSize: 14,
-    color: '#666',
+    marginBottom: 16,
   },
-  productName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 4,
+  heroButton: {
+    borderRadius: 30,
   },
-  hostName: {
-    fontSize: 14,
-    color: '#666',
+  liveBadge: {
+    alignSelf: 'flex-start',
+    marginBottom: 10,
+    backgroundColor: 'red',
   },
+
+  section: { padding: 20 },
+  sectionTitle: { fontSize: 22, fontWeight: 'bold', marginBottom: 15 },
+
+  card: { marginBottom: 15, overflow: 'hidden' },
+  thumb: { width: '100%', height: 180 },
+  cardContent: { padding: 15 },
+  streamTitle: { fontWeight: 'bold', fontSize: 16 },
+  streamHost: { color: '#666', marginBottom: 10 },
+
+  featureCard: { padding: 20, marginBottom: 15 },
+  featureTitle: { fontWeight: 'bold', fontSize: 16 },
+  featureText: { color: '#666' },
 });
 
 export default HomeScreen;
